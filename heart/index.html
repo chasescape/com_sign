@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>新能源车联网综合大数据平台</title>
+    <title>综合大数据平台</title>
     <script src="js/jquery-2.1.1.min.js"></script>
     <script>
         $(window).load(function () {
@@ -21,42 +21,51 @@
     </div>
     <div class="data">
         <div class="data-title">
-            <div class="title-center ">数据概览演示案例</div>
+            <div class="title-center ">心脏功能评估系统</div>
         </div>
         <div class="data-content">
             <div class="con-left fl">
                 <div class="left-top">
                     <div class="info boxstyle">
-                        <div class="title">车辆用电分布</div>
+                        <div class="title">数据分割操作</div>
                         <div class="info-main">
-                            <ul>
-                                <!-- <li><img src="picture/info-img-1.png" alt=""><span>动力系统</span>
-                                    <p>12,457</p>
-                                </li>
-                                <li><img src="picture/info-img-2.png" alt=""><span>照明系统</span>
-                                    <p>12,457</p>
-                                </li>
-                                <li><img src="picture/info-img-3.png" alt=""><span>娱乐系统</span>
-                                    <p>12,457</p>
-                                </li>
-                                <li><img src="picture/info-img-4.png" alt=""><span>空调系统</span>
-                                    <p>74%</p>
-                                </li> -->
-                            </ul>
+                            <!-- 数据选择部分 -->
+                            <div class="data-selection">
+                                <label for="dataSelect" style="color: aliceblue;">选择数据:</label>
+                                <select id="dataSelect">
+                                    <option value="data1">数据集 1</option>
+                                    <option value="data2">数据集 2</option>
+                                    <option value="data3">数据集 3</option>
+                                </select>
+                            </div>
+
+                            <!-- 开始分割按钮 -->
+                            <div class="start-segmentation">
+                                <button id="startSegmentation" class="btn">开始分割</button>
+                            </div>
+
+                            <!-- 分割结果展示 -->
+                            <div class="segmentation-result">
+                                <h3 style="color: aliceblue;">分割结果:</h3>
+                                <div id="result">
+                                    <!-- 结果展示区域 -->
+                                    <p style="color: aliceblue;">请选择数据并点击开始分割。</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="top-bottom boxstyle">
-                        <div class="title">车辆用电分布</div>
+                        <div class="title">射血分数图</div>
                         <div id="echarts_1" class="charts"></div>
                     </div>
                 </div>
                 <div class="left-bottom boxstyle">
-                    <div class="title">车型分类</div>
+                    <div class="title">射血分数图</div>
                     <div id="echarts_2" class="charts"></div>
                 </div>
             </div>
             <div class="center-container">
-                <img src="D:/pilaojiashi/com_sign/heart/images/0X18BA5512BE5D6FFA.gif" alt="Heart GIF"
+                <img src="D:\pilaojiashi\com_sign\heart\images\0X18BA5512BE5D6FFA.gif" alt="Heart GIF"
                     style="width: 800px; height: auto">
             </div>
             <div class="con-center fl">
@@ -69,15 +78,15 @@
             </div>
             <div class="con-right fr">
                 <div class="right-top boxstyle">
-                    <div class="title">车辆用电分布</div>
+                    <div class="title">GLS</div>
                     <div id="echarts_4" class="charts"></div>
                 </div>
                 <div class="right-center boxstyle">
-                    <div class="title">报警车辆TOP5</div>
+                    <div class="title">血流动力学指标</div>
                     <div id="echarts_5" class="charts"></div>
                 </div>
                 <div class="right-bottom boxstyle">
-                    <div class="title">电池报警车辆TOP10</div>
+                    <div class="title">NT-porBNP</div>
                     <div id="echarts_6" class="charts"></div>
                 </div>
             </div>

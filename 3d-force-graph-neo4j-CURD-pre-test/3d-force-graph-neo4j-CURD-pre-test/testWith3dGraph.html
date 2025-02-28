@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+    <script src="./3d-force-graph.min.js"></script>
+    <style>
+      #ui {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1; /* 让 UI 在 3D 元素之上 */
+      }
+
+      ul ul.drop-down-content {
+        display: none;
+      }
+
+      ul li:hover > ul {
+        display: block;
+      }
+
+      .dropdown {
+        background-color: aliceblue;
+      }
+
+      ul {
+        list-style: none;
+      }
+      .nav > li {
+        float: left;
+      }
+      ul a {
+        display: block;
+        text-decoration: none;
+        width: 100px;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        color: white;
+        background-color: #2f3e45;
+      }
+      .nav > li:first-child a {
+        border-radius: 10px 0 0 10px;
+      }
+      .nav > li:last-child a {
+        border-radius: 0 10px 10px 0;
+      }
+      .drop-down {
+        /*position: relative;*/
+        height: 50px;
+      }
+      .drop-down-content {
+        padding: 0;
+        opacity: 0.3;
+        height: 0;
+        transition: all 1s ease;
+        /*position: absolute;*/
+      }
+
+      h3 {
+        font-size: 30px;
+        clear: both;
+        /*            position: relative;
+            z-index: -1;*/
+      }
+      .drop-down-content li:hover a {
+        background-color: red;
+      }
+      .nav .drop-down:hover .drop-down-content {
+        opacity: 1;
+        height: 150px;
+      }
+	  dialog {
+		z-index: 9999;
+		position: absolute;
+		top:50%;
+		border: 5px solid gainsboro;
+	  }
+
+    .fileManager{
+      width: 70%;
+      height: 70%;
+      top:10%;
+    }
+
+    .fileManager iframe{
+      width: 100%;
+      height: 100%;
+    }
+
+    .fileManager button{
+      float: right;
+      
+    }
+
+    .selectBox {
+				border: 1px solid #55aaff;
+				background-color: rgba(75, 160, 255, 0.3);
+				position: fixed;
+    }
+
+    .keymap {
+      background-color: rgba(50, 50, 50, 0.5);
+      border-radius: 3px;
+      padding: 20px;
+      color: white;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 9999;
+    }
+
+    .plugins {
+      background-color: rgba(50, 50, 50, 0.5);
+      border-radius: 3px;
+      padding: 20px;
+      color: white;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 9999;
+    }
+
+    
+    </style>
+  </head>
+  <body>
+    <div id="ui">
+      <ul class="nav">
+        <li class="drop-down">
+          <a href="#">开始</a>
+          <ul class="drop-down-content">
+            <!-- <li><a onclick="createDatabase()" href="#">新建</a></li>
+            <li><a onclick="switchDatabase()" href="#">打开</a></li> -->
+            <!-- <li><a href="#">保存</a></li> -->
+            <!-- <li><a href="#">另存为</a></li> -->
+            <li><a onclick="editUrl()" href="#">设置</a></li>
+          </ul>
+        </li>
+        <li class="drop-down">
+          <a href="#">程序</a>
+          <ul class="drop-down-content">
+            <li><a onclick="selectFile()" href="#">打开</a></li>
+            
+          </ul>
+        </li>
+        <li class="drop-down">
+          <a href="#">编辑</a>
+          <ul class="drop-down-content">
+            <li><a onclick="clearDatabase()" href="#">清空</a></li>
+            
+          </ul>
+        </li>
+        <li class="drop-down">
+          <a href="#">控制</a>
+          <ul class="drop-down-content">
+            <li><a onclick="trackball()" href="#">跟踪</a></li>
+            <li><a onclick="fly()" href="#">飞行</a></li>
+            
+          </ul>
+        </li>
+        <li class="drop-down">
+          <a href="#">Help</a>
+          <ul class="drop-down-content">
+            <li><a onclick="document.getElementsByClassName('keymap')[0].style.display='block'" href="#">keymap</a></li> 
+          </ul>
+        </li>
+
+        <li class="drop-down">
+          <a href="#">Plugins</a>
+          <ul class="drop-down-content">
+            <li><a onclick="window.GraphApp.features.pluginsManager.openWindow()" href="#">plugins</a></li> 
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="keymap" style="display: none;">
+      <p>multiply select : <a style="border: 1px solid;">Ctrl</a></p>
+      <p>add Node : <a style="border: 1px solid;">Double Click</a></p>
+      <p>connect Node : <a style="border: 1px solid;">Alt + Click 2 Node</a></p>
+      <p>concat Node : <a style="border: 1px solid;">Alt + Double Click</a></p>
+      <p>attach node : <a style="border: 1px solid;">Tab</a></p>
+      <p>del node : <a style="border: 1px solid;">Del</a></p>
+      <p>filter node : <a style="border: 1px solid;">F</a></p>
+      <p>shortest path : <a style="border: 1px solid;">X</a></p>
+      <p>pathSerializer : <a style="border: 1px solid;">P</a></p>
+      <p>prev Node : <a style="border: 1px solid;">←</a></p>
+      <p>next Node : <a style="border: 1px solid;">→</a></p>
+      <p>fix Node : <a style="border: 1px solid;">Shift+F</a></p>
+      <span class="keymapclose" style="background:rgba(255,255,255,0.3);position:fixed;color: red;right:0;top:0;" 
+      onclick="document.getElementsByClassName('keymap')[0].style.display='none'">x</span>
+    </div>
+
+    <div class="plugins" style="display: none;">
+      <span class="pluginsclose" style="background:rgba(255,255,255,0.3);position:fixed;color: red;right:0;top:0;" 
+      onclick="document.getElementsByClassName('plugins')[0].style.display='none'">x</span>
+      <input class="packagename">
+      <button onclick="window.GraphApp.features.pluginsManager.searchPlugins()">Search</button>
+      <button onclick="window.GraphApp.features.pluginsManager.getInstalled()">Installed</button>
+      <div class="pluginslist">
+        
+      </div>
+      <button onclick="window.GraphApp.features.pluginsManager.page--">上一页</button>
+      <button onclick="window.GraphApp.features.pluginsManager.page++">下一页</button>
+    </button>
+    </div>
+    <div id="3d-graph"></div>
+
+      
+    <textarea class="cmd"></textarea>
+
+	<dialog class="editDatabase"> 
+		<p>链接：<input class="url"></p>
+    <p>用户名：<input class="username"></p>
+    <p>密码：<input class="pwd"></p>
+    <p><button onclick="setUrl()" type="button">确定</button></p>
+	</dialog>
+
+  <dialog class="switchDatabase"> 
+		<select  id="listDatabase"></select>
+    <p><button onclick="setDatabase()" type="button">确定</button></p>
+	</dialog>
+
+  <dialog class="fileManager"> 
+		<iframe src="explorer"></iframe>
+    <button onclick="document.getElementsByClassName('fileManager')[0].style.display = 'none'" type="button">关闭</button>
+	</dialog>
+
+  </body>
+  <script src="./Neo4jConnector.js"></script>
+  <script src="./basic.js"></script>
+  <script src="./neo4jWith3DGraph.js"></script>
+  <script src="./eventManager.js"></script>
+  <script src="./THREEUtils.js"></script>
+  <script src="./three.js"></script>
+  <script src="./three-spritetext.min.js"></script>
+  
+
+  <script src="./dat.gui.js"></script>
+  <script src="./GUI.js"></script>
+  <script src="./GUIController.js"></script>
+  <script src="./ui.js"></script>
+  <script src="./ajax.js"></script>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module">
+    import { SelectionBox } from './three-selectionbox.js';
+    import { SelectionHelper } from './three-selectionhelper.js';
+
+    import { UnrealBloomPass } from '//unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+    window.GraphApp = {};//global variable
+
+    
+    
+
+      window.ajax = ajax;
+      
+
+      //ADD three-spritetext TO THREE
+      THREE.SpriteText = SpriteText;
+      THREE.SelectionBox = SelectionBox;
+      THREE.SelectionHelper = SelectionHelper;
+      
+      // initialize Neo4jConnector //
+      let url = localStorage.dburl?localStorage.dburl:"neo4j://localhost:7687";
+      let name = localStorage.dbname?localStorage.name:"neo4j";
+      let pwd = localStorage.dbpwd?localStorage.dbpwd:"AGCF3xJumbfJD-b";
+      let a = new Connector(
+        "neo4j://localhost:7687",
+        "neo4j",
+        "AGCF3xJumbfJD-b"
+      );
+      window.neo4jConector = a;
+      window.GraphApp.neo4jConnector = a;
+      a.setDatabase("neo4j");
+      await a.initSession();
+      a.session.run("MATCH (n) return n").then((res) => {
+        console.log(res);
+      });
+
+      //-------------------------//
+
+      // reference others code //
+
+      //bloom effect
+      // const bloomPass = new UnrealBloomPass();
+      // bloomPass.strength = 3;
+      // bloomPass.radius = 1;
+      // bloomPass.threshold = 0.1;
+
+      let Graph = ForceGraph3D({ controlType: localStorage.controlType })(document.getElementById("3d-graph"));
+      Graph.linkWidth(link => 2).nodeRelSize(5).d3VelocityDecay(0.3).linkDirectionalArrowLength(1.5)
+      .linkDirectionalArrowRelPos(1);//.postProcessingComposer().addPass(bloomPass);
+      Graph.d3Force("link").distance(50);
+      Graph.backgroundColor("#000000");
+      window.GraphApp.Graph = Graph;
+      //-------------------------//
+
+      // initialize basic //
+      let basic = new Basic(Graph);
+      window.GraphApp.basic = basic;
+      //init a node
+      //node = a.initNode();
+      //node.name = "new";
+      //node.id = 88;
+      //basic.addNodes([node]);
+      //------------------//
+
+      // test neo4jWith3DGraph.js //
+      let NWG = new neo4jWith3DGraph(basic, a);
+      window.NWG = NWG;
+      await NWG.getAll();
+      //node.name = "new2";
+      //NWG.addNodes([node]);
+      //setInterval(()=>{
+      //basic.addNodes([node]);
+      //},1000);
+
+      //--------------------------//
+
+      // initialize THREEUtils //
+      let utils = new THREEUtils(self);
+      //-------------------------//
+
+      // init GUI //
+      const datgui = new dat.GUI();
+      let gui = new GUI(datgui);
+      window.GraphApp.gui = gui;
+      let guiController = new GUIController(gui, NWG, $, self);
+      window.GraphApp.guiController = guiController;
+      //----------//
+
+      // DO NOT BIND GRAPH EVENT THERE! BIND IN EVENTMANAGER!//
+      //Graph.onNodeClick((node)=>{guiController.editNodePanel(node);});
+      //---------------------------------//
+
+      // initialize EventManager //
+      let eventManager = new EventManager(
+        document.getElementById("3d-graph"),
+        Graph,
+        guiController,
+        NWG,
+        basic,
+        utils,
+        THREE
+      );
+      window.GraphApp.eventManager = eventManager;
+      //-------------------------//
+
+      
+
+    
+
+
+    let featureList = [
+      "fold",
+      "filter",
+      "pulse",
+      "pathSerializer",
+      "history",
+      "theme",
+      "search",
+      "pluginsManager"
+    ]
+    window.GraphApp.features = {};
+    for(let p of featureList){
+      window.GraphApp.features[p] = await import(`./features/${p}.js`);
+      window.GraphApp.features[p] = window.GraphApp.features[p].default;
+      window.GraphApp.features[p] = new window.GraphApp.features[p]();
+    }
+
+    var pluginList = [];
+    window.GraphApp.plugins = {};
+    //window.GraphApp.pluginList = window.GraphApp.features.pluginsManager.listPlugins();
+    for(let p of pluginList){ 
+      window.GraphApp.plugins[p] = await import(`./plugins/node_modules/${p}/index.js`);
+      window.GraphApp.plugins[p] = window.GraphApp.plugins[p].default;
+      window.GraphApp.plugins[p] = new window.GraphApp.plugins[p]();
+    }
+
+    // let Fold = await import("./features/fold.js");
+    // Fold = Fold.default;
+    // window.GraphApp.Fold = Fold;
+
+    // //load node fold feature //
+    // let fold = new Fold();
+    // //-----------------------//
+    
+
+    
+  </script>
+</html>

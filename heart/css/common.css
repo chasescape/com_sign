@@ -146,3 +146,60 @@ position: absolute;
     left: 900px;
     /* 距离页面左边 100px */
 }
+        .info {
+            font-family: Arial, sans-serif;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            width: 540px;
+            height: 540px;
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    
+        .info-main {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+    
+        .data-selection {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .start-segmentation {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+    
+        .segmentation-result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    
+        .btn {
+            padding: 15px 30px;
+            background-color: #20b9cf;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+    
+        .btn:hover {
+            background-color: #2089cf;
+        }
