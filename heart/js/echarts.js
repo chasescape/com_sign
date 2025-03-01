@@ -1,5 +1,4 @@
 
-
 document.getElementById('startSegmentation').addEventListener('click', function () {
     // 获取选择的数据
     var selectedData = document.getElementById('dataSelect').value;
@@ -11,11 +10,38 @@ document.getElementById('startSegmentation').addEventListener('click', function 
         // 模拟分割过程
         setTimeout(function () {
             resultContainer.innerHTML = '<p>' + selectedData + ' 的分割操作已完成！</p>';
+
+            // 在分割完成后，调用图像处理日志函数
+            logImageProcessing();
         }, 2000); // 模拟2秒后完成分割
     } else {
         resultContainer.innerHTML = '<p>请选择一个数据集进行分割。</p>';
     }
 });
+
+function logImageProcessing() {
+    const logOutput = document.getElementById('logOutput');
+
+    // 模拟处理过程并将日志输出到页面
+    setTimeout(function () {
+        logOutput.innerHTML = `
+                    <p>处理完成，用时3030毫秒</p>
+                    <p>图片参数：</p>
+                    <p>图像分辨率：(512,512)</p>
+                    <p>左上角坐标：(107,219)</p>
+                    <p>右下角坐标：(319,395)</p>
+                    <p>中心坐标：(213.0,307.0)</p>
+                    <p>区域宽度：212</p>
+                    <p>区域高度：176</p>
+                    <p>区域面积：23401.0</p>
+                    <p>区域周长：693.647</p>
+                    <p>左极点坐标：(107,305)</p>
+                    <p>右极点坐标：(318,286)</p>
+                    <p>上极点坐标：(268,219)</p>
+                    <p>下极点坐标：(189,394)</p>
+                `;
+    }, 3030); // 模拟处理过程耗时3030毫秒
+}
 $(function () {
 
     echarts_1();
@@ -207,118 +233,103 @@ $(function () {
             myChart.resize();
         });
     }
-
-
     function echarts_3() {
-        var myChart = echarts.init(document.getElementById('echarts_3'));
+        var canvas = document.createElement("canvas");
+        var myChart = document.getElementById('echarts_3');
+        myChart.appendChild(canvas); // 把canvas加到echarts_3容器中
 
-        var timeData = [];
-        var heartRateData = [];
-        var currentTime = 0;
+        var ctx = canvas.getContext("2d");
 
-        // 模拟心跳波形的生成
-        function generateHeartRateData() {
-            timeData.push(currentTime);
+        var width = canvas.width = myChart.clientWidth;
+        var height = canvas.height = 200;
 
-            // 模拟心电图的波形，尖锐的波峰和低谷
-            var heartRate = 70 + Math.random() * 5; // 基础波动
-            if (currentTime % 40 === 0) {
-                heartRate += 60;  // 模拟心跳峰值（QRS波）
-            }
+        // 初始偏移量
+        var xOffset = 0;
 
-            heartRate = Math.min(Math.max(heartRate, 50), 120); // 限制心率范围在50到120之间
+        // 绘制心电图波形函数
+        function drawECG(xOffset) {
+            ctx.beginPath();
+            ctx.moveTo(0 + xOffset, height / 2); // 从画布的左边开始
 
-            heartRateData.push(heartRate);
+            // 绘制P波，增加波峰高度
+            ctx.lineTo(50 + xOffset, height / 2 - 30);
+            ctx.lineTo(100 + xOffset, height / 2);
 
-            if (timeData.length > 50) {
-                timeData.shift();
-                heartRateData.shift();
-            }
+            // 绘制QRS波群（快速尖峰），增加波峰高度
+            ctx.lineTo(150 + xOffset, height / 2 - 80); // Q波
+            ctx.lineTo(200 + xOffset, height / 2 + 100); // R波
+            ctx.lineTo(250 + xOffset, height / 2 - 60); // S波
 
-            currentTime++;
+            // 中间部分设为0，拉长并让线变平
+            ctx.lineTo(300 + xOffset, height / 2); // 连接点
+            ctx.lineTo(600 + xOffset, height / 2); // 拉长0的部分（水平线）
+
+            // 绘制T波（缓慢上升和下降），增加波峰高度
+            ctx.lineTo(650 + xOffset, height / 2 + 60); // T波的上升
+            ctx.lineTo(700 + xOffset, height / 2); // T波的下降
+
+            ctx.strokeStyle = "#72b0f9"; // 蓝色曲线
+            ctx.lineWidth = 2;
+            ctx.stroke();
         }
 
-        setInterval(function () {
-            generateHeartRateData();
+        // 绘制坐标轴
+        function drawAxes() {
+            ctx.strokeStyle = "#ccc"; // 坐标轴颜色
+            ctx.lineWidth = 1;
 
-            var option = {
-                tooltip: {
-                    trigger: 'axis'
-                },
-                grid: {
-                    left: '3%',
-                    right: '5%',
-                    top: '8%',
-                    bottom: '5%',
-                    containLabel: true
-                },
-                color: ['#72b0f9'],  // 蓝色线条
-                toolbox: {
-                    show: false
-                },
-                xAxis: [
-                    {
-                        type: 'category',
-                        axisTick: { show: false },
-                        boundaryGap: false,
-                        axisLabel: {
-                            textStyle: {
-                                color: 'rgba(255,255,255,.6)',
-                                fontSize: '12'
-                            },
-                            interval: 4, // 每4秒显示一个时间标签
-                            formatter: function (params) {
-                                return params % 10 === 0 ? params : '';  // 每10秒显示一次标签
-                            }
-                        },
-                        data: timeData
-                    }
-                ],
-                yAxis: {
-                    min: 50,  // 最低心率
-                    max: 120, // 最高心率
-                    type: 'value',
-                    axisLabel: {
-                        textStyle: {
-                            color: '#ccc',
-                            fontSize: '12',
-                        }
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: 'rgba(160,160,160,0.2)',
-                        }
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: 'rgba(160,160,160,0.2)',
-                        }
-                    }
-                },
-                series: [
-                    {
-                        type: 'line',
-                        lineStyle: {
-                            color: '#72b0f9',
-                            width: 2,
-                        },
-                        areaStyle: {
-                            normal: {
-                                color: 'rgba(114,176,249, 0.3)' // 蓝色渐变区域
-                            }
-                        },
-                        smooth: false,  // 禁用平滑效果，制造尖锐波形
-                        data: heartRateData
-                    }
-                ]
-            };
+            // X轴
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
 
-            myChart.setOption(option);
-        }, 1000); // 每秒更新一次数据
+            // Y轴
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, height);
+            ctx.stroke();
 
-        window.addEventListener("resize", function () {
-            myChart.resize();
-        });
+            // 绘制坐标轴刻度
+            ctx.font = "12px Arial";
+            ctx.fillStyle = "#ccc";
+            for (var i = 0; i < width; i += 100) {
+                ctx.fillText(i, i, height / 2 + 15); // X轴刻度
+            }
+
+            for (var j = -100; j <= 100; j += 50) {
+                ctx.fillText(j, 0, height / 2 - j); // Y轴刻度
+            }
+        }
+
+        // 动态绘制心电图
+        function draw() {
+            ctx.clearRect(0, 0, width, height); // 清空画布
+
+            // 绘制坐标轴
+            drawAxes();
+
+            // 绘制第一个心电图
+            drawECG(xOffset);
+
+            // 绘制第二个心电图（从第一个波形的末尾开始）
+            drawECG(xOffset + 700);
+            drawECG(xOffset + 1400);
+
+            // 每次更新时，逐步移动xOffset，使心电图波形向左滚动
+            xOffset -= 4;
+
+            // 平滑循环：如果第一个波形完全移出画布，将其重新放置在第二个波形的末尾
+            if (xOffset <= -700) {
+                xOffset = 0;
+            }
+
+            // 继续动画
+            requestAnimationFrame(draw);
+        }
+
+        // 启动动画
+        draw();
     }
 
 
@@ -589,7 +600,7 @@ $(function () {
                 month: "III级",
                 value: 516,
                 size: 167
-            }, 
+            },
 
             {
                 month: "IV级",

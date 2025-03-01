@@ -135,7 +135,7 @@ em {
 }
 
 .center-container {
-position: absolute;
+    position: absolute;
     /* 使用绝对定位 */
     width: 900px;
     /* 控制图片宽度 */
@@ -146,60 +146,85 @@ position: absolute;
     left: 900px;
     /* 距离页面左边 100px */
 }
-        .info {
-            font-family: Arial, sans-serif;
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 10px;
-            width: 540px;
-            height: 540px;
-            display: flex;
-            flex-direction: column;
-        }
-    
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
-    
-        .info-main {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            justify-content: space-between;
-        }
-    
-        .data-selection {
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    
-        .start-segmentation {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-    
-        .segmentation-result {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-    
-        .btn {
-            padding: 15px 30px;
-            background-color: #20b9cf;
-            border: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 18px;
-            transition: background-color 0.3s;
-        }
-    
-        .btn:hover {
-            background-color: #2089cf;
-        }
+
+.info {
+    font-family: Arial, sans-serif;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    width: 540px;
+    height: 540px;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.info-main {
+
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.data-selection,
+.start-segmentation,
+.segmentation-result {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 20.6px;
+    color: #ffffff;
+}
+
+select,
+button {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: none;
+}
+
+select {
+    width: 100%;
+    background-color: #4b6273;
+    color: aliceblue;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+h3 {
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+#result p {
+    margin: 10px 0;
+    color: #ffffff;
+}
+
+#logOutput {
+    background-color: #2f435b41;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 180px;
+    overflow-y: scroll;
+    color: #ffeb3b;
+    font-family: monospace;
+    margin-top: 20px;
+}

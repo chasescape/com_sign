@@ -31,12 +31,14 @@
                         <div class="info-main">
                             <!-- 数据选择部分 -->
                             <div class="data-selection">
-                                <label for="dataSelect" style="color: aliceblue;">选择数据:</label>
+                                <label for="dataSelect"
+                                    style="font-size: 20.6px; color: #ffffff; position: relative; top: -5px; margin-bottom: 10px;">选择数据:</label>
                                 <select id="dataSelect">
                                     <option value="data1">数据集 1</option>
                                     <option value="data2">数据集 2</option>
                                     <option value="data3">数据集 3</option>
                                 </select>
+
                             </div>
 
                             <!-- 开始分割按钮 -->
@@ -46,11 +48,15 @@
 
                             <!-- 分割结果展示 -->
                             <div class="segmentation-result">
-                                <h3 style="color: aliceblue;">分割结果:</h3>
+                                <h3>分割结果:</h3>
                                 <div id="result">
-                                    <!-- 结果展示区域 -->
-                                    <p style="color: aliceblue;">请选择数据并点击开始分割。</p>
+                                    <p>请选择数据并点击开始分割。</p>
                                 </div>
+                            </div>
+
+                            <!-- 图像处理日志 -->
+                            <div id="logOutput">
+                                <p>图像处理日志将显示在这里...</p>
                             </div>
                         </div>
                     </div>

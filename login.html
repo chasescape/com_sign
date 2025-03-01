@@ -1,11 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Seamless Dynamic Heart Rate ECG</title>
+    <style>
+        canvas {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
 </head>
+
 <body>
-    
+    <canvas id="ecgCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("ecgCanvas");
+        var ctx = canvas.getContext("2d");
+
+        var width = canvas.width = window.innerWidth;
+        var height = canvas.height = 400;
+
+        // 初始偏移量
+        var xOffset = 0;
+
+        // 绘制心电图波形函数
+        function drawECG(xOffset) {
+            ctx.beginPath();
+            ctx.moveTo(0 + xOffset, height / 2); // 从画布的左边开始
+
+            // 绘制P波，增加波峰高度
+            ctx.lineTo(50 + xOffset, height / 2 - 30);
+            ctx.lineTo(100 + xOffset, height / 2);
+
+            // 绘制QRS波群（快速尖峰），增加波峰高度
+            ctx.lineTo(150 + xOffset, height / 2 - 80); // Q波
+            ctx.lineTo(200 + xOffset, height / 2 + 100); // R波
+            ctx.lineTo(250 + xOffset, height / 2 - 60); // S波
+
+            // 中间部分设为0，拉长并让线变平
+            ctx.lineTo(300 + xOffset, height / 2); // 连接点
+            ctx.lineTo(600 + xOffset, height / 2); // 拉长0的部分（水平线）
+
+            // 绘制T波（缓慢上升和下降），增加波峰高度
+            ctx.lineTo(650 + xOffset, height / 2 + 60); // T波的上升
+            ctx.lineTo(700 + xOffset, height / 2); // T波的下降
+
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // 动态绘制心电图
+        function draw() {
+            ctx.clearRect(0, 0, width, height); // 清空画布
+
+            // 绘制第一个心电图
+            drawECG(xOffset);
+
+            // 绘制第二个心电图（从第一个波形的末尾开始）
+            drawECG(xOffset + 700);
+
+            // 每次更新时，逐步移动xOffset，使心电图波形向左滚动
+            xOffset -= 4;
+
+            // 平滑循环：如果第一个波形完全移出画布，将其重新放置在第二个波形的末尾
+            if (xOffset <= -700) {
+                xOffset = 0;
+            }
+
+            // 继续动画
+            requestAnimationFrame(draw);
+        }
+
+        // 启动动画
+        draw();
+    </script>
 </body>
+
 </html>
