@@ -212,99 +212,110 @@ $(function () {
     function echarts_3() {
         var myChart = echarts.init(document.getElementById('echarts_3'));
 
-        option = {
-            tooltip: {
-                trigger: 'axis'
-            },
+        var timeData = [];
+        var heartRateData = [];
+        var currentTime = 0;
 
-            grid: {
-                left: '3%',
-                right: '5%',
-                top: '8%',
-                bottom: '5%',
-                containLabel: true
-            },
-            color: ['#a4d8cc', '#25f3e6'],
-            toolbox: {
-                show: false,
-                feature: {
-                    mark: { show: true },
-                    dataView: { show: true, readOnly: false },
-                    magicType: { show: true, type: ['line', 'bar', 'stack', 'tiled'] },
-                    restore: { show: true },
-                    saveAsImage: { show: true }
-                }
-            },
+        // 模拟心跳波形的生成
+        function generateHeartRateData() {
+            timeData.push(currentTime);
 
-            calculable: true,
-            xAxis: [
-                {
-                    type: 'category',
-                    axisTick: { show: false },
-                    boundaryGap: false,
+            // 模拟心电图的波形，尖锐的波峰和低谷
+            var heartRate = 70 + Math.random() * 5; // 基础波动
+            if (currentTime % 40 === 0) {
+                heartRate += 60;  // 模拟心跳峰值（QRS波）
+            }
+
+            heartRate = Math.min(Math.max(heartRate, 50), 120); // 限制心率范围在50到120之间
+
+            heartRateData.push(heartRate);
+
+            if (timeData.length > 50) {
+                timeData.shift();
+                heartRateData.shift();
+            }
+
+            currentTime++;
+        }
+
+        setInterval(function () {
+            generateHeartRateData();
+
+            var option = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                grid: {
+                    left: '3%',
+                    right: '5%',
+                    top: '8%',
+                    bottom: '5%',
+                    containLabel: true
+                },
+                color: ['#72b0f9'],  // 蓝色线条
+                toolbox: {
+                    show: false
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        axisTick: { show: false },
+                        boundaryGap: false,
+                        axisLabel: {
+                            textStyle: {
+                                color: 'rgba(255,255,255,.6)',
+                                fontSize: '12'
+                            },
+                            interval: 4, // 每4秒显示一个时间标签
+                            formatter: function (params) {
+                                return params % 10 === 0 ? params : '';  // 每10秒显示一次标签
+                            }
+                        },
+                        data: timeData
+                    }
+                ],
+                yAxis: {
+                    min: 50,  // 最低心率
+                    max: 120, // 最高心率
+                    type: 'value',
                     axisLabel: {
                         textStyle: {
-                            color: 'rgba(255,255,255,.6)',
-                            fontSize: '12'
-                        },
+                            color: '#ccc',
+                            fontSize: '12',
+                        }
+                    },
+                    axisLine: {
                         lineStyle: {
-                            color: 'rgba(255,255,255,.1)',
+                            color: 'rgba(160,160,160,0.2)',
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(160,160,160,0.2)',
+                        }
+                    }
+                },
+                series: [
+                    {
+                        type: 'line',
+                        lineStyle: {
+                            color: '#72b0f9',
+                            width: 2,
                         },
-                        interval: { default: 0 },
-                        formatter: function (params) {
-                            return params; // 时间格式化
-                        }
-                    },
-                    data: ['00:00:00', '00:00:01', '00:00:02', '00:00:03', '00:00:04', '00:00:05', '00:00:06']
-                }
-            ],
-            yAxis: {
-                min: 50,  // 最低心率
-                max: 120, // 最高心率
-                type: 'value',
-                axisLabel: {
-                    textStyle: {
-                        color: '#ccc',
-                        fontSize: '12',
+                        areaStyle: {
+                            normal: {
+                                color: 'rgba(114,176,249, 0.3)' // 蓝色渐变区域
+                            }
+                        },
+                        smooth: false,  // 禁用平滑效果，制造尖锐波形
+                        data: heartRateData
                     }
-                },
-                axisLine: {
-                    lineStyle: {
-                        color: 'rgba(160,160,160,0.2)',
-                    }
-                },
-                splitLine: {
-                    lineStyle: {
-                        color: 'rgba(160,160,160,0.2)',
-                    }
-                }
-            },
+                ]
+            };
 
-            series: [
-                {
-                    type: 'line',
-                    lineStyle: {
-                        color: '#72b0f9',
-                    },
-                    areaStyle: {
-                        normal: {
-                            type: 'default',
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 0.8, [
-                                { offset: 0, color: 'rgba(129,197,255,.6)' },
-                                { offset: 1, color: 'rgba(129,197,255,.0)' }
-                            ], false)
-                        }
-                    },
-                    smooth: false,  // 禁用平滑效果，制造锋利转折
-                    itemStyle: {
-                        normal: { areaStyle: { type: 'default' } }
-                    },
-                    data: [60, 88, 65, 85, 90, 75, 95]  // 模拟心率跳动数据
-                }
-            ]
-        };
+            myChart.setOption(option);
+        }, 1000); // 每秒更新一次数据
 
-        myChart.setOption(option);
         window.addEventListener("resize", function () {
             myChart.resize();
         });

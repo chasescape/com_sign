@@ -45,7 +45,7 @@
 
           <!-- 下面的小li都是一样的样式，只需要修改文字和图标 -->
           <li class="nav-link">
-            <a href="#">
+            <a href="http://localhost:7474/">
               <i class='bx bx-bar-chart-alt-2 icon'></i>
               <span class="text nav-text">草药信息</span>
             </a>
@@ -104,9 +104,14 @@
 
   <section class="home">
     <div class="text">Dashboard Sidebar</div>
+    <!-- Vue 组件显示区域 -->
+    <div id="app">
+      <!-- 使用v-if来控制显示/隐藏HelloWorld组件 -->
+      <hello-world v-if="isHelloWorldVisible" msg="Vite + Vue" />
+    </div>
   </section>
-
-
+  <script src="node_modules/vue/dist/vue.js"></script>
+  <script src="app.js"></script>
   <script src="./src/main.js"></script>
 </body>
 
